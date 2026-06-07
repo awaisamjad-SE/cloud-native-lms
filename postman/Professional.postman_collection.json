@@ -1,0 +1,1170 @@
+{
+  "info": {
+    "name": "LMS - Professional API (complete)",
+    "_postman_id": "b6f8c2d8-0000-4a3b-9f2f-123456789abc",
+    "description": "Full Postman collection for LMS APIs matching config.urls.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth (Accounts)",
+      "item": [
+        {
+          "name": "Register - Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Passw0rd!\",\n  \"first_name\": \"Test\",\n  \"last_name\": \"User\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Token Obtain",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"Passw0rd!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login",
+                ""
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json && json.access) { pm.collectionVariables.set('access_token', json.access); } else if (json && json.access_token) { pm.collectionVariables.set('access_token', json.access_token); }",
+                  "if (json && json.user) {",
+                  "  pm.collectionVariables.set('user_role', json.user.role || '');",
+                  "  pm.collectionVariables.set('user_id', json.user.id || '');",
+                  "  pm.collectionVariables.set('user_email', json.user.email || '');",
+                  "  pm.collectionVariables.set('user_phone', json.user.phone_number || '');",
+                  "  pm.collectionVariables.set('user_profile_image', json.user.profile_image || '');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Token Refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"<refresh_token>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/token/refresh/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "token",
+                "refresh",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "profile",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Patch Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"New\",\n  \"last_name\": \"Name\",\n  \"phone_number\": \"+1234567890\",\n  \"bio\": \"Updated bio\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/profile/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "profile",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Profile Image (backend)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/profile/upload-image/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "profile",
+                "upload-image",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Presigned Upload Data (profile)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile/upload-image/presigned/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "profile",
+                "upload-image",
+                "presigned",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old_password\": \"Passw0rd!\",\n  \"new_password\": \"N3wP@ssw0rd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "change-password",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/admin/users/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "admin",
+                "users",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: User Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/admin/users/{{user_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "admin",
+                "users",
+                "{{user_id}}",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Activate User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/admin/users/{{user_id}}/activate/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "admin",
+                "users",
+                "{{user_id}}",
+                "activate",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Deactivate User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/admin/users/{{user_id}}/deactivate/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "admin",
+                "users",
+                "{{user_id}}",
+                "deactivate",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Catalog - List Courses",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/courses/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Course Detail",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/courses/{{course_slug}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses",
+                "{{course_slug}}",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Course Lessons",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/courses/{{course_slug}}/lessons/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses",
+                "{{course_slug}}",
+                "lessons",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lesson Access (get URL)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lessons/{{lesson_id}}/access/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lessons",
+                "{{lesson_id}}",
+                "access",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Course\",\n  \"description\": \"Course description\",\n  \"price\": 1000,\n  \"category\": \"Programming\",\n  \"status\": \"draft\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/courses/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "courses",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Update Course",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/courses/{{course_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "courses",
+                "{{course_id}}",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Publish Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/courses/{{course_id}}/publish/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "courses",
+                "{{course_id}}",
+                "publish",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Upload Course Thumbnail (form-data)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/courses/{{course_id}}/thumbnail/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "courses",
+                "{{course_id}}",
+                "thumbnail",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Create Lesson",
+          "description": "Create a lesson and upload its media in one multipart/form-data request. The course + order pair must be unique within a course.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "course",
+                  "value": "{{course_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "Lesson 3",
+                  "type": "text"
+                },
+                {
+                  "key": "lesson_type",
+                  "value": "video",
+                  "type": "text"
+                },
+                {
+                  "key": "is_preview",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "order",
+                  "value": "3",
+                  "type": "text"
+                },
+                {
+                  "key": "duration",
+                  "value": "120",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/lessons/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "lessons",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Enrollments",
+      "item": [
+        {
+          "name": "My Enrollments (student)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/enrollments/my/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enrollments",
+                "my",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: List/Create Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/enrollments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "enrollments",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Create Enrollment (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_id\": \"<student_uuid>\",\n  \"course_id\": <course_id>\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/enrollments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "enrollments",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Activate Enrollment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/enrollments/{{enrollment_id}}/activate/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "enrollments",
+                "{{enrollment_id}}",
+                "activate",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Deactivate Enrollment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/enrollments/{{enrollment_id}}/deactivate/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "enrollments",
+                "{{enrollment_id}}",
+                "deactivate",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Public: List Bank Accounts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/payments/bank-accounts/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "bank-accounts",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Offline Payment (student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "course_id",
+                  "value": "{{course_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "bank_account_id",
+                  "value": "{{bank_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "transaction_reference",
+                  "value": "TXN-123",
+                  "type": "text"
+                },
+                {
+                  "key": "proof_note",
+                  "value": "Paid via bank",
+                  "type": "text"
+                },
+                {
+                  "key": "proof_receipt",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/offline/submit/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "offline",
+                "submit",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "My Payments (student)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments/my/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "my",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: List Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/payments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "payments",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Approve Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/payments/{{payment_id}}/approve/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "payments",
+                "{{payment_id}}",
+                "approve",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Reject Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejection_reason\": \"Invalid proof\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/payments/{{payment_id}}/reject/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "payments",
+                "{{payment_id}}",
+                "reject",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: List/Create Bank Accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/bank-accounts/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "bank-accounts",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Create Bank Account (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bank_name\": \"Sample Bank\",\n  \"account_title\": \"LMS Pvt\",\n  \"account_number\": \"1234567890\",\n  \"iban\": \"PK00TEST000000\",\n  \"instructions\": \"Transfer then share reference\",\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/bank-accounts/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "bank-accounts",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin: Bank Account Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/bank-accounts/{{bank_account_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "bank-accounts",
+                "{{bank_account_id}}",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Progress",
+      "item": [
+        {
+          "name": "Complete Lesson (student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lessons/{{lesson_id}}/complete/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lessons",
+                "{{lesson_id}}",
+                "complete",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Course Progress (student)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses/{{course_slug}}/progress/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses",
+                "{{course_slug}}",
+                "progress",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
